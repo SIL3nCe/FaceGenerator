@@ -21,13 +21,16 @@ public class FaceGenerator : MonoBehaviour
 
     void Start()
     {
-        DirectoryInfo dirInfo = new("./Images/");
-        foreach (FileInfo file in dirInfo.GetFiles())
+        if (Directory.Exists("./Images/"))
         {
-            CreateTextureFromFilePath(file.FullName);
-        }
+            DirectoryInfo dirInfo = new("./Images/");
+            foreach (FileInfo file in dirInfo.GetFiles())
+            {
+                CreateTextureFromFilePath(file.FullName);
+            }
 
-        GenerateFace();
+            GenerateFace();
+        }
     }
 
     private void CreateTextureFromFilePath(string filePath)
@@ -50,6 +53,9 @@ public class FaceGenerator : MonoBehaviour
 
     private void GenerateFace()
     {
+        if (_imageList.Count == 0)
+            return;
+
         int pixelHeightAccumulation = FaceUpPixelHeight;
 
         // Up
