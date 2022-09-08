@@ -73,3 +73,6 @@ crashlytics-build.properties
 
 #Build
 /BuildWin/
+
+#Faces
+/FaceGenerator_Project/Images/
