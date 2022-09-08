@@ -48,14 +48,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afab76f3ac13f9e48bd2dc2749349ce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  BaseImageHeight: 512
   FaceUpRenderer: {fileID: 5863611969009826216}
-  FaceUpPixelHeight: 150
+  FaceUpPixelHeight: 175
   FaceEyesRenderer: {fileID: 6318697097362549809}
   FaceEyesPixelHeight: 50
   FaceNoseRenderer: {fileID: 245431336141979088}
-  FaceNosePixelHeight: 150
+  FaceNosePixelHeight: 75
   FaceBottomRenderer: {fileID: 3481353803430437211}
-  FaceBottomPixelHeight: 150
+  FaceBottomPixelHeight: 212
 --- !u!1001 &2385251400456912299
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -140,7 +141,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1895838062817832677, guid: 814b347d87ef96740b74dc46a071afb3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: -1.125
       objectReference: {fileID: 0}
     - target: {fileID: 1895838062817832677, guid: 814b347d87ef96740b74dc46a071afb3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -207,7 +208,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1895838062817832677, guid: 814b347d87ef96740b74dc46a071afb3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -3.5
+      value: -3.185
       objectReference: {fileID: 0}
     - target: {fileID: 1895838062817832677, guid: 814b347d87ef96740b74dc46a071afb3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -274,7 +275,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1895838062817832677, guid: 814b347d87ef96740b74dc46a071afb3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: -1.75
       objectReference: {fileID: 0}
     - target: {fileID: 1895838062817832677, guid: 814b347d87ef96740b74dc46a071afb3, type: 3}
       propertyPath: m_LocalPosition.z

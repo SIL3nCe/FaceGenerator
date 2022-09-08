@@ -5,6 +5,8 @@ using System.IO;
 
 public class FaceGenerator : MonoBehaviour
 {
+    public int BaseImageHeight = 512;
+
     public SpriteRenderer FaceUpRenderer;
     public int FaceUpPixelHeight = 150;
 
@@ -15,7 +17,7 @@ public class FaceGenerator : MonoBehaviour
     public int FaceNosePixelHeight = 150;
 
     public SpriteRenderer FaceBottomRenderer;
-    public int FaceBottomPixelHeight = 150;
+    public int FaceBottomPixelHeight = 162;
 
     private List<Texture2D> _imageList = new();
 
@@ -92,6 +94,6 @@ public class FaceGenerator : MonoBehaviour
     private void OnValidate()
     {
         // Bottom integrate all the remaining pixel height
-        FaceBottomPixelHeight = 500 - (FaceNosePixelHeight + FaceEyesPixelHeight + FaceUpPixelHeight);
+        FaceBottomPixelHeight = BaseImageHeight - (FaceNosePixelHeight + FaceEyesPixelHeight + FaceUpPixelHeight);
     }
 }
