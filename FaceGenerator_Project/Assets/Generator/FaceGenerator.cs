@@ -129,8 +129,8 @@ public class FaceGenerator : MonoBehaviour
         if (_namesList.Count == _imageList.Count)
         {
             SName randName = new();
-            string firstName = _namesList[Random.Range(0, _namesList.Count)].FirstName;
-            string lastName = _namesList[Random.Range(0, _namesList.Count)].LastName;
+            string firstName = _namesList[faceIds[Random.Range(0, faceIds.Count)]].FirstName;
+            string lastName = _namesList[faceIds[Random.Range(0, faceIds.Count)]].LastName;
             randName.FirstName = lastName[0].ToString().ToUpper() + firstName.Remove(0, 1);
             randName.LastName = firstName[0].ToString().ToUpper() + lastName.Remove(0, 1);
 
