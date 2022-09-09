@@ -51,7 +51,8 @@ public class FaceGenerator : MonoBehaviour
             {
                 CreateTextureFromFilePath(file.FullName);
 
-                string[] nameSplit = file.Name.Split("_");
+                string nameWithoutExt = file.Name.Replace(file.Extension, "");
+                string[] nameSplit = nameWithoutExt.Split("_");
                 if (nameSplit.Length >= 1)
                 {
                     SName name = new();
