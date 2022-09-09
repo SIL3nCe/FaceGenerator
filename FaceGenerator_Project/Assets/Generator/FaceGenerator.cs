@@ -14,6 +14,7 @@ public struct SName
 [Serializable]
 public class SFacePart
 {
+    public string PartName;
     public SpriteRenderer PartRenderer;
     public int PartPixelHeight;
 
@@ -89,6 +90,7 @@ public class FaceGenerator : MonoBehaviour
 
         int pixelHeightAccumulation = 0;
 
+        // Get random image for every part and crop it
         foreach (SFacePart facePart in FaceParts)
         {
             pixelHeightAccumulation += facePart.PartPixelHeight;
@@ -96,10 +98,11 @@ public class FaceGenerator : MonoBehaviour
             facePart.CurrentfaceID = UnityEngine.Random.Range(0, _imageList.Count);
 
             Texture2D baseTexture = _imageList[facePart.CurrentfaceID];
-            Texture2D texture_up = new(baseTexture.width, facePart.PartPixelHeight);
-            texture_up.SetPixels(baseTexture.GetPixels(0, baseTexture.height - pixelHeightAccumulation, baseTexture.width, facePart.PartPixelHeight));
-            texture_up.Apply();
-            facePart.PartRenderer.sprite = Sprite.Create(texture_up, new Rect(0.0f, 0.0f, texture_up.width, texture_up.height), new Vector2(0.5f, 0.5f));
+            Texture2D partTexture = new(baseTexture.width, facePart.PartPixelHeight);
+            partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - pixelHeightAccumulation, baseTexture.width, facePart.PartPixelHeight));
+            partTexture.Apply();
+
+            facePart.PartRenderer.sprite = Sprite.Create(partTexture, new Rect(0.0f, 0.0f, partTexture.width, partTexture.height), new Vector2(0.5f, 0.5f));
         }
 
         // Get random name in the selected faces and invert first letters

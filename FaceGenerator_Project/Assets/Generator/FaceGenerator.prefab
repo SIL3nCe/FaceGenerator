@@ -50,18 +50,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BaseImageHeight: 512
   FaceParts:
-  - PartRenderer: {fileID: 5863611969009826216}
+  - PartName: Top
+    PartRenderer: {fileID: 5863611969009826216}
     PartPixelHeight: 175
-    _isLocked: 0
-  - PartRenderer: {fileID: 6318697097362549809}
+  - PartName: Eyes
+    PartRenderer: {fileID: 6318697097362549809}
     PartPixelHeight: 50
-    _isLocked: 0
-  - PartRenderer: {fileID: 245431336141979088}
+  - PartName: Nose&Mouth
+    PartRenderer: {fileID: 245431336141979088}
     PartPixelHeight: 75
-    _isLocked: 0
-  - PartRenderer: {fileID: 3481353803430437211}
+  - PartName: Bottom
+    PartRenderer: {fileID: 3481353803430437211}
     PartPixelHeight: 212
-    _isLocked: 0
   NameText: {fileID: 0}
 --- !u!1001 &2385251400456912299
 PrefabInstance:
