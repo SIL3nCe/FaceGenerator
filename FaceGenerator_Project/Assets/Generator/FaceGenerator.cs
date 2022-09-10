@@ -15,14 +15,46 @@ public struct SName
 public class SFacePart
 {
     public string PartName;
+
     public SpriteRenderer PartRenderer;
-    public int PartPixelHeight;
+    public int PartPixelHeight = 0;
+
+    // Accumulation of pixel height of previous parts
+    [NonSerialized]
+    public int PixelHeightAccumulation = 0;
+
+    // Id of the texture in _imageList used for this part
+    [NonSerialized]
+    public int CurrentfaceID = -1;
 
     [NonSerialized]
-    public int CurrentfaceID;
+    public bool IsLocked = false;
 
-    [NonSerialized]
-    public bool IsLocked;
+    public void RandomizePart(List<Texture2D> imageList)
+    {
+        CurrentfaceID = UnityEngine.Random.Range(0, imageList.Count);
+
+        ApplyCurrentFaceID(imageList);
+    }
+
+    public void LoadNextTextureID(List<Texture2D> imageList, bool next)
+    {
+        CurrentfaceID += imageList.Count + (next ? 1 : -1);
+        CurrentfaceID %= imageList.Count;
+        
+        ApplyCurrentFaceID(imageList);
+    }
+
+    private void ApplyCurrentFaceID(List<Texture2D> imageList)
+    {
+        Texture2D baseTexture = imageList[CurrentfaceID];
+        Texture2D partTexture = new(baseTexture.width, PartPixelHeight);
+        partTexture.filterMode = FilterMode.Point;
+        partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, baseTexture.width, PartPixelHeight));
+        partTexture.Apply();
+
+        PartRenderer.sprite = Sprite.Create(partTexture, new Rect(0.0f, 0.0f, partTexture.width, partTexture.height), new Vector2(0.5f, 0.5f));
+    }
 }
 
 public class FaceGenerator : MonoBehaviour
@@ -44,7 +76,14 @@ public class FaceGenerator : MonoBehaviour
 
     void Start()
     {
-        if (Directory.Exists(_imageDirectoryPath))
+        int pixelHeightAccumulation = 0;
+        foreach (SFacePart facePart in FaceParts)
+        {
+            pixelHeightAccumulation += facePart.PartPixelHeight;
+            facePart.PixelHeightAccumulation = pixelHeightAccumulation;
+        }
+
+            if (Directory.Exists(_imageDirectoryPath))
         {
             DirectoryInfo dirInfo = new(_imageDirectoryPath);
             foreach (FileInfo file in dirInfo.GetFiles())
@@ -89,24 +128,17 @@ public class FaceGenerator : MonoBehaviour
         if (_imageList.Count == 0)
             return;
 
-        int pixelHeightAccumulation = 0;
-
         // Get random image for every part and crop them
         foreach (SFacePart facePart in FaceParts)
         {
-            pixelHeightAccumulation += facePart.PartPixelHeight;
-
-            facePart.CurrentfaceID = UnityEngine.Random.Range(0, _imageList.Count);
-
-            Texture2D baseTexture = _imageList[facePart.CurrentfaceID];
-            Texture2D partTexture = new(baseTexture.width, facePart.PartPixelHeight);
-            partTexture.filterMode = FilterMode.Point;
-            partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - pixelHeightAccumulation, baseTexture.width, facePart.PartPixelHeight));
-            partTexture.Apply();
-
-            facePart.PartRenderer.sprite = Sprite.Create(partTexture, new Rect(0.0f, 0.0f, partTexture.width, partTexture.height), new Vector2(0.5f, 0.5f));
+            facePart.RandomizePart(_imageList);
         }
 
+        RandomizeName();
+    }
+
+    private void RandomizeName()
+    {
         // Get random name in the selected faces and invert first letters
         if (_namesList.Count == _imageList.Count)
         {
@@ -116,7 +148,7 @@ public class FaceGenerator : MonoBehaviour
             randName.FirstName = lastName[0].ToString().ToUpper() + firstName.Remove(0, 1);
             randName.LastName = firstName[0].ToString().ToUpper() + lastName.Remove(0, 1);
 
-            NameText.text = randName.FirstName+ " " + randName.LastName;
+            NameText.text = randName.FirstName + " " + randName.LastName;
         }
     }
 
