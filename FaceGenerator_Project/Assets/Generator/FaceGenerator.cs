@@ -32,6 +32,9 @@ public class SFacePart
 
     public void RandomizePart(List<Texture2D> imageList)
     {
+        if (IsLocked)
+            return;
+
         CurrentfaceID = UnityEngine.Random.Range(0, imageList.Count);
 
         ApplyCurrentFaceID(imageList);
@@ -39,6 +42,9 @@ public class SFacePart
 
     public void LoadNextTextureID(List<Texture2D> imageList, bool next)
     {
+        if (IsLocked)
+            return;
+
         CurrentfaceID += imageList.Count + (next ? 1 : -1);
         CurrentfaceID %= imageList.Count;
         
