@@ -91,7 +91,7 @@ public class FaceGenerator : MonoBehaviour
 
         int pixelHeightAccumulation = 0;
 
-        // Get random image for every part and crop it
+        // Get random image for every part and crop them
         foreach (SFacePart facePart in FaceParts)
         {
             pixelHeightAccumulation += facePart.PartPixelHeight;
@@ -100,6 +100,7 @@ public class FaceGenerator : MonoBehaviour
 
             Texture2D baseTexture = _imageList[facePart.CurrentfaceID];
             Texture2D partTexture = new(baseTexture.width, facePart.PartPixelHeight);
+            partTexture.filterMode = FilterMode.Point;
             partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - pixelHeightAccumulation, baseTexture.width, facePart.PartPixelHeight));
             partTexture.Apply();
 
