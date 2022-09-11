@@ -26,10 +26,16 @@ public class FacePart : MonoBehaviour
     [NonSerialized]
     public bool IsLocked = false;
 
+    private Texture2D _partTexture;
+
+    private void Start()
+    {
+        _partTexture = new(0, 0);
+    }
 
     public void SetPositionBasedOnPixelHeightAccumulation(FacePart previousPart)
     {
-        Vector2 partPos = PartRenderer.transform.position;
+        Vector2 partPos = transform.position;
 
         // 100 pixel per unit by default, divide every thing by 100 to get y usable for transform
         if (previousPart == null)
@@ -38,10 +44,10 @@ public class FacePart : MonoBehaviour
         }
         else
         {
-            partPos.y = previousPart.PartRenderer.transform.position.y - (previousPart.PartPixelHeight * 0.005f) - (PartPixelHeight * 0.005f);
+            partPos.y = previousPart.transform.position.y - (previousPart.PartPixelHeight * 0.005f) - (PartPixelHeight * 0.005f);
         }
 
-        PartRenderer.transform.position = partPos;
+        transform.position = partPos;
     }
 
     public void RandomizePart(List<Texture2D> imageList)
@@ -71,11 +77,12 @@ public class FacePart : MonoBehaviour
             return;
 
         Texture2D baseTexture = imageList[CurrentfaceID];
-        Texture2D partTexture = new(baseTexture.width, PartPixelHeight);
-        partTexture.filterMode = FilterMode.Point;
-        partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, baseTexture.width, PartPixelHeight));
-        partTexture.Apply();
 
-        PartRenderer.sprite = Sprite.Create(partTexture, new Rect(0.0f, 0.0f, partTexture.width, partTexture.height), new Vector2(0.5f, 0.5f));
+        _partTexture.Reinitialize(baseTexture.width, PartPixelHeight);
+        _partTexture.filterMode = FilterMode.Point;
+        _partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, baseTexture.width, PartPixelHeight));
+        _partTexture.Apply();
+
+        PartRenderer.sprite = Sprite.Create(_partTexture, new Rect(0.0f, 0.0f, _partTexture.width, _partTexture.height), new Vector2(0.5f, 0.5f));
     }
 }
