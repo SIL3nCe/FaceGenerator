@@ -9,7 +9,11 @@ public class FacePart : MonoBehaviour
     public string PartName;
 
     public SpriteRenderer PartRenderer;
-    public int PartPixelHeight = 0;
+
+    public int PartPixelHeightPercentage = 0;
+
+    [NonSerialized]
+    public int PartPixelHeight;
 
     // Accumulation of pixel height of previous parts
     [NonSerialized]
@@ -21,6 +25,7 @@ public class FacePart : MonoBehaviour
 
     [NonSerialized]
     public bool IsLocked = false;
+
 
     public void SetPositionBasedOnPixelHeightAccumulation(FacePart previousPart)
     {
@@ -62,6 +67,9 @@ public class FacePart : MonoBehaviour
 
     private void ApplyCurrentFaceID(List<Texture2D> imageList)
     {
+        if (PartPixelHeight == 0)
+            return;
+
         Texture2D baseTexture = imageList[CurrentfaceID];
         Texture2D partTexture = new(baseTexture.width, PartPixelHeight);
         partTexture.filterMode = FilterMode.Point;

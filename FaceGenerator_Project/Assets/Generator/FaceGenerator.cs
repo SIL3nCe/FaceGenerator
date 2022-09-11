@@ -28,6 +28,14 @@ public class FaceGenerator : MonoBehaviour
 
     public TMP_Text NameText;
 
+    private static FaceGenerator _instance = null;
+    public static FaceGenerator Instance => _instance;
+
+    private void Awake()
+    {
+        _instance = this;
+    }
+
     void Start()
     {
         if (Directory.Exists(_imageDirectoryPath))
@@ -48,11 +56,11 @@ public class FaceGenerator : MonoBehaviour
                 }
             }
 
-            // Adjust camera zoom
+            // Adjust camera zoom based on total height
             Camera.main.orthographicSize = _totalImageHeight * 0.01f;
 
             // Update last part pixel height before starting since BaseImageHeight has just been computed here
-            SetLastPartPixelHeight();
+            SetupPartPixelHeights();
 
             // Compute pixel height accumulation for every part before generating
             int pixelHeightAccumulation = 0;
@@ -131,16 +139,37 @@ public class FaceGenerator : MonoBehaviour
         }
     }
 
-    private void SetLastPartPixelHeight()
+    private void SetupPartPixelHeights()
     {
-        // Bottom integrate all the remaining pixel height
-
-        int accVal = 0;
+        // Check if percentage are valid and set to 0 if not
+        int accPerc = 0;
         for (int i = 0; i < FaceParts.Count - 1; ++i)
         {
-            accVal += FaceParts[i].PartPixelHeight;
+            FaceParts[i].PartPixelHeightPercentage = Mathf.Clamp(FaceParts[i].PartPixelHeightPercentage, 0, 100 - accPerc);
+            accPerc += FaceParts[i].PartPixelHeightPercentage;
+            accPerc = Mathf.Min(accPerc, 100);
         }
 
-        FaceParts[^1].PartPixelHeight = _totalImageHeight - accVal;
+        // Bottom integrate all the remaining pixel percentage
+        FaceParts[^1].PartPixelHeightPercentage = _totalImageHeight - accPerc;
+
+        // Generate pixel height based on percentages
+        float accVal = 0;
+        for (int i = 0; i < FaceParts.Count - 1; ++i)
+        {
+            float pixelHeight = _totalImageHeight * (FaceParts[i].PartPixelHeightPercentage * 0.01f);
+            FaceParts[i].PartPixelHeight = (int)pixelHeight;
+            accVal += pixelHeight;
+        }
+
+        // Bottom integrate all the remaining pixel height
+        FaceParts[^1].PartPixelHeight = _totalImageHeight - (int)accVal;
+    }
+
+    public void OnFacePartUpdated()
+    {
+        // Check if every part percentages are valid
+        
+
     }
 }
