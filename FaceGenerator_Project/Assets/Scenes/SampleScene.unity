@@ -470,9 +470,17 @@ PrefabInstance:
       propertyPath: PartPixelHeight
       value: 87
       objectReference: {fileID: 0}
+    - target: {fileID: 133873508781717984, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
+      propertyPath: PartPixelHeightPercentage
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 519220949751295097, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
       propertyPath: PartPixelHeight
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 519220949751295097, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
+      propertyPath: PartPixelHeightPercentage
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1009543889985437219, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
       propertyPath: NameText
@@ -529,6 +537,14 @@ PrefabInstance:
     - target: {fileID: 6044907414429777304, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
       propertyPath: PartPixelHeight
       value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 6044907414429777304, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
+      propertyPath: PartPixelHeightPercentage
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6977309393249820947, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
+      propertyPath: PartPixelHeightPercentage
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16a6574b0bcf096488f63ef0648dc731, type: 3}
