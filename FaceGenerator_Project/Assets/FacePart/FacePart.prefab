@@ -97,6 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fd055e44f952864d875553456bcbb43, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PartName: 
+  FacePartID: 0
   PartRenderer: {fileID: 8090049903506719747}
-  PartPixelHeight: 0
+  PartPixelHeightPercentage: 0
+  FacePartUIPrefab: {fileID: 6607822522287145817, guid: 633aa8b122a790846829ec07625d76c3, type: 3}

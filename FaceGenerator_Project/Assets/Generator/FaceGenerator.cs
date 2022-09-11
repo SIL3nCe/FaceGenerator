@@ -59,6 +59,12 @@ public class FaceGenerator : MonoBehaviour
             // Adjust camera zoom based on total height
             Camera.main.orthographicSize = _totalImageHeight * 0.01f;
 
+            // Init parts, will create part UIs
+            for (int i = 0; i < FaceParts.Count; ++i)
+            {
+                FaceParts[i].Initialize(i);
+            }
+
             // Update last part pixel height before starting since BaseImageHeight has just been computed here
             SetupPartPixelHeights();
 
@@ -171,5 +177,20 @@ public class FaceGenerator : MonoBehaviour
         // Check if every part percentages are valid
         
 
+    }
+
+    public void LoadPreviousPart(int partID)
+    {
+        FaceParts[partID].LoadNextTextureID(_imageList, false);
+    }
+    
+    public void LoadNextPart(int partID)
+    {
+        FaceParts[partID].LoadNextTextureID(_imageList, true);
+    }
+
+    public void LockPart(int partID)
+    {
+        FaceParts[partID].IsLocked = !FaceParts[partID].IsLocked;
     }
 }

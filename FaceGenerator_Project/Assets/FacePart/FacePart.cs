@@ -6,11 +6,14 @@ using UnityEngine;
 [Serializable]
 public class FacePart : MonoBehaviour
 {
-    public string PartName;
+    public int FacePartID;
 
     public SpriteRenderer PartRenderer;
 
     public int PartPixelHeightPercentage = 0;
+
+    public GameObject FacePartUIPrefab;
+    private GameObject _facePartUI;
 
     [NonSerialized]
     public int PartPixelHeight;
@@ -31,6 +34,20 @@ public class FacePart : MonoBehaviour
     private void Start()
     {
         _partTexture = new(0, 0);
+    }
+
+    public void Initialize(int partID)
+    {
+        FacePartID = partID;
+
+        _facePartUI = Instantiate(FacePartUIPrefab);
+        _facePartUI.transform.parent = transform;
+
+        _facePartUI.GetComponent<FacePartUI>().FacePartID = FacePartID;
+
+        Vector2 pos = Vector2.zero;
+        pos.x = 2.0f;
+        _facePartUI.transform.localPosition = pos;
     }
 
     public void SetPositionBasedOnPixelHeightAccumulation(FacePart previousPart)
