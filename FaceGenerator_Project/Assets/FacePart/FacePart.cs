@@ -31,7 +31,7 @@ public class FacePart : MonoBehaviour
 
     private Texture2D _partTexture;
 
-    private void Start()
+    private void Awake()
     {
         _partTexture = new(0, 0);
     }
