@@ -36,7 +36,7 @@ public class FacePart : MonoBehaviour
         _partTexture = new(0, 0);
     }
 
-    public void Initialize(int partID)
+    public void Initialize(int partID, int totalPixelSize)
     {
         FacePartID = partID;
 
@@ -46,7 +46,7 @@ public class FacePart : MonoBehaviour
         _facePartUI.GetComponent<FacePartUI>().FacePartID = FacePartID;
 
         Vector2 pos = Vector2.zero;
-        pos.x = 2.0f;
+        pos.x = totalPixelSize * 0.01f;
         _facePartUI.transform.localPosition = pos;
     }
 

@@ -57,12 +57,12 @@ public class FaceGenerator : MonoBehaviour
             }
 
             // Adjust camera zoom based on total height
-            Camera.main.orthographicSize = _totalImageHeight * 0.01f;
+            Camera.main.orthographicSize = _totalImageHeight * 0.008f;
 
             // Init parts, will create part UIs
             for (int i = 0; i < FaceParts.Count; ++i)
             {
-                FaceParts[i].Initialize(i);
+                FaceParts[i].Initialize(i, _totalImageHeight);
             }
 
             // Update last part pixel height before starting since BaseImageHeight has just been computed here
@@ -85,7 +85,7 @@ public class FaceGenerator : MonoBehaviour
     {
         byte[] bytes = System.IO.File.ReadAllBytes(filePath);
 
-        Texture2D tex = new Texture2D(0, 0);
+        Texture2D tex = new(0, 0);
         tex.LoadImage(bytes);
 
         _totalImageHeight = _totalImageHeight == -1 ? tex.height : Mathf.Min(_totalImageHeight, tex.height);
