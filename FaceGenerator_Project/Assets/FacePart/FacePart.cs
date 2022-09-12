@@ -93,9 +93,9 @@ public class FacePart : MonoBehaviour
 
         Texture2D baseTexture = imageList[CurrentfaceID];
 
-        _partTexture.Reinitialize(baseTexture.width, PartPixelHeight);
+        _partTexture.Reinitialize(FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
         _partTexture.filterMode = FilterMode.Point;
-        _partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, baseTexture.width, PartPixelHeight));
+        _partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageHeight, PartPixelHeight));
         _partTexture.Apply();
 
         PartRenderer.sprite = Sprite.Create(_partTexture, new Rect(0.0f, 0.0f, _partTexture.width, _partTexture.height), new Vector2(0.5f, 0.5f));
