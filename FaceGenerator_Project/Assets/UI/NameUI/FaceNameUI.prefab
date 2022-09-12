@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98ed6d2876b5f4347b09dc5c6907e0d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LockButton: {fileID: 6607822523530857521}
+  LockedIcon: {fileID: 21300000, guid: 839247341afc6c844986fa4162699153, type: 3}
+  UnlockedIcon: {fileID: 21300000, guid: 633e86e5c32e3c047aa302687ea21cd0, type: 3}
 --- !u!1 &6607822522911967562
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,7 +218,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 839247341afc6c844986fa4162699153, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 633e86e5c32e3c047aa302687ea21cd0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

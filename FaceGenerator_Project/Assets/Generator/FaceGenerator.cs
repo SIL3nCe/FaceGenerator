@@ -143,9 +143,10 @@ public class FaceGenerator : MonoBehaviour
         }
     }
 
-    public void LockName()
+    public bool LockName()
     {
         _nameLocked = !_nameLocked;
+        return _nameLocked;
     }
     public void RandomizeName()
     {
@@ -194,23 +195,33 @@ public class FaceGenerator : MonoBehaviour
 
     public void LoadPreviousPart(int partID)
     {
+        if (FaceParts[partID].IsLocked)
+            return;
+
         FaceParts[partID].LoadNextTextureID(_imageList, false);
         RandomizeName();
     }
     
     public void LoadNextPart(int partID)
     {
+        if (FaceParts[partID].IsLocked)
+            return;
+
         FaceParts[partID].LoadNextTextureID(_imageList, true);
         RandomizeName();
     }
 
-    public void LockPart(int partID)
+    public bool LockPart(int partID)
     {
         FaceParts[partID].IsLocked = !FaceParts[partID].IsLocked;
+        return FaceParts[partID].IsLocked;
     }
 
     public void RandomizePart(int partID)
     {
+        if (FaceParts[partID].IsLocked)
+            return;
+
         FaceParts[partID].RandomizePart(_imageList);
         RandomizeName();
     }

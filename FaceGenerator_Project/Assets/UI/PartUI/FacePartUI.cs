@@ -1,10 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class FacePartUI : MonoBehaviour
 {
     public int FacePartID;
+
+    public GameObject LockButton;
+
+    public Sprite LockedIcon;
+    public Sprite UnlockedIcon;
 
     public void OnPreviousClicked()
     {
@@ -18,7 +24,8 @@ public class FacePartUI : MonoBehaviour
 
     public void OnLockClicked()
     {
-        FaceGenerator.Instance.LockPart(FacePartID);
+        bool locked = FaceGenerator.Instance.LockPart(FacePartID);
+        LockButton.GetComponent<Image>().sprite = locked ? LockedIcon : UnlockedIcon;
     }
 
     public void OnRandomizeClicked()
