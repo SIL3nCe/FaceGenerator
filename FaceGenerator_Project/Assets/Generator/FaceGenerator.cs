@@ -62,12 +62,17 @@ public class FaceGenerator : MonoBehaviour
                 }
             }
 
+            // Adjust location to keep it centered to the left, Initially configured for 512x512
+            Vector2 pos = transform.position;
+            pos.x *= _totalImageHeight / 512.0f;
+            transform.position = pos;
+
             // Adjust camera zoom based on total height
             Camera.main.orthographicSize = _totalImageHeight * 0.008f;
 
-            // Create Name UI
+            // Create Name buttons UI
             _nameUI = Instantiate(NameUIPrefab);
-            Vector2 pos = _nameUI.transform.position;
+            pos = _nameUI.transform.position;
             pos.x = _totalImageHeight * 0.005f;
             pos.y = Camera.main.ScreenToWorldPoint(NameText.transform.position).y;
             _nameUI.transform.position = pos;
