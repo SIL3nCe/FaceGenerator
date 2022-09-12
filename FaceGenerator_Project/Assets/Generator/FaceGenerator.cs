@@ -27,8 +27,13 @@ public class FaceGenerator : MonoBehaviour
     // Names gathered from images
     private List<SName> _namesList = new();
 
+    // Face Name UI
     public TMP_Text NameText;
+    public GameObject NameUIPrefab;
+    private GameObject _nameUI;
+    private bool _nameLocked = false;
 
+    // Static Instance
     private static FaceGenerator _instance = null;
     public static FaceGenerator Instance => _instance;
 
@@ -59,6 +64,13 @@ public class FaceGenerator : MonoBehaviour
 
             // Adjust camera zoom based on total height
             Camera.main.orthographicSize = _totalImageHeight * 0.008f;
+
+            // Create Name UI
+            _nameUI = Instantiate(NameUIPrefab);
+            Vector2 pos = _nameUI.transform.position;
+            pos.x = _totalImageHeight * 0.005f;
+            pos.y = Camera.main.ScreenToWorldPoint(NameText.transform.position).y;
+            _nameUI.transform.position = pos;
 
             // Init parts, will create part UIs
             for (int i = 0; i < FaceParts.Count; ++i)
@@ -131,8 +143,15 @@ public class FaceGenerator : MonoBehaviour
         }
     }
 
-    private void RandomizeName()
+    public void LockName()
     {
+        _nameLocked = !_nameLocked;
+    }
+    public void RandomizeName()
+    {
+        if (_nameLocked)
+            return;
+
         // Get random name in the selected faces and invert first letters
         if (_namesList.Count == _imageList.Count)
         {
@@ -173,29 +192,26 @@ public class FaceGenerator : MonoBehaviour
         FaceParts[^1].PartPixelHeight = _totalImageHeight - (int)accVal;
     }
 
-    public void OnFacePartUpdated()
-    {
-        // Check if every part percentages are valid
-        
-
-    }
-
     public void LoadPreviousPart(int partID)
     {
         FaceParts[partID].LoadNextTextureID(_imageList, false);
+        RandomizeName();
     }
     
     public void LoadNextPart(int partID)
     {
         FaceParts[partID].LoadNextTextureID(_imageList, true);
+        RandomizeName();
     }
 
     public void LockPart(int partID)
     {
         FaceParts[partID].IsLocked = !FaceParts[partID].IsLocked;
     }
+
     public void RandomizePart(int partID)
     {
         FaceParts[partID].RandomizePart(_imageList);
+        RandomizeName();
     }
 }

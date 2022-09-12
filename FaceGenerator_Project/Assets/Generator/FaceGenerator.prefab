@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 6044907414429777304}
   - {fileID: 6977309393249820947}
   NameText: {fileID: 0}
+  NameUIPrefab: {fileID: 6607822522287145817, guid: 951a5419a8a677b49b7e25fe6e001937, type: 3}
 --- !u!1001 &2385251400456912299
 PrefabInstance:
   m_ObjectHideFlags: 0
