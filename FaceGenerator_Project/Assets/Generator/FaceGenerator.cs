@@ -53,7 +53,7 @@ public class FaceGenerator : MonoBehaviour
 
                 string nameWithoutExt = file.Name.Replace(file.Extension, "");
                 string[] nameSplit = nameWithoutExt.Split("_");
-                if (nameSplit.Length >= 1)
+                if (nameSplit.Length > 1)
                 {
                     SName name = new();
                     name.FirstName = nameSplit[0];
@@ -71,11 +71,14 @@ public class FaceGenerator : MonoBehaviour
             Camera.main.orthographicSize = _totalImageHeight * 0.008f;
 
             // Create Name buttons UI
-            _nameUI = Instantiate(NameUIPrefab);
-            pos = _nameUI.transform.position;
-            pos.x = _totalImageHeight * 0.005f;
-            pos.y = Camera.main.ScreenToWorldPoint(NameText.transform.position).y;
-            _nameUI.transform.position = pos;
+            if (_namesList.Count > 0)
+            {
+                _nameUI = Instantiate(NameUIPrefab);
+                pos = _nameUI.transform.position;
+                pos.x = _totalImageHeight * 0.005f;
+                pos.y = Camera.main.ScreenToWorldPoint(NameText.transform.position).y;
+                _nameUI.transform.position = pos;
+            }
 
             // Init parts, will create part UIs
             for (int i = 0; i < FaceParts.Count; ++i)
@@ -155,20 +158,23 @@ public class FaceGenerator : MonoBehaviour
     }
     public void RandomizeName()
     {
-        if (_nameLocked)
+        if (_nameLocked || _namesList.Count == 0)
             return;
 
         // Get random name in the selected faces and invert first letters
-        if (_namesList.Count == _imageList.Count)
-        {
-            SName randName = new();
-            string firstName = _namesList[FaceParts[UnityEngine.Random.Range(0, FaceParts.Count)].CurrentfaceID].FirstName;
-            string lastName = _namesList[FaceParts[UnityEngine.Random.Range(0, FaceParts.Count)].CurrentfaceID].LastName;
-            randName.FirstName = lastName[0].ToString().ToUpper() + firstName.Remove(0, 1);
-            randName.LastName = firstName[0].ToString().ToUpper() + lastName.Remove(0, 1);
+        int randId = FaceParts[UnityEngine.Random.Range(0, FaceParts.Count)].CurrentfaceID;
+        randId = Mathf.Min(randId, _namesList.Count - 1);
+        string firstName = _namesList[randId].FirstName;
 
-            NameText.text = randName.FirstName + " " + randName.LastName;
-        }
+        randId = FaceParts[UnityEngine.Random.Range(0, FaceParts.Count)].CurrentfaceID;
+        randId = Mathf.Min(randId, _namesList.Count - 1);
+        string lastName = _namesList[randId].LastName;
+
+        SName randName = new();
+        randName.FirstName = lastName[0].ToString().ToUpper() + firstName.Remove(0, 1);
+        randName.LastName = firstName[0].ToString().ToUpper() + lastName.Remove(0, 1);
+
+        NameText.text = randName.FirstName + " " + randName.LastName;
     }
 
     private void SetupPartPixelHeights()
