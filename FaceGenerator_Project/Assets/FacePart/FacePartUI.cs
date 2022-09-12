@@ -20,4 +20,9 @@ public class FacePartUI : MonoBehaviour
     {
         FaceGenerator.Instance.LockPart(FacePartID);
     }
+
+    public void OnRandomizeClicked()
+    {
+        FaceGenerator.Instance.RandomizePart(FacePartID);
+    }
 }

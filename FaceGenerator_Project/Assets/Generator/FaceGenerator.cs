@@ -15,6 +15,7 @@ public class FaceGenerator : MonoBehaviour
 {
     // Get total generated image height based on smallest gathered image
     private int _totalImageHeight = -1;
+    public int TotalImageHeight => _totalImageHeight;
 
     // Face part data
     public List<FacePart> FaceParts = new();
@@ -62,7 +63,7 @@ public class FaceGenerator : MonoBehaviour
             // Init parts, will create part UIs
             for (int i = 0; i < FaceParts.Count; ++i)
             {
-                FaceParts[i].Initialize(i, _totalImageHeight);
+                FaceParts[i].Initialize(i);
             }
 
             // Update last part pixel height before starting since BaseImageHeight has just been computed here
@@ -192,5 +193,9 @@ public class FaceGenerator : MonoBehaviour
     public void LockPart(int partID)
     {
         FaceParts[partID].IsLocked = !FaceParts[partID].IsLocked;
+    }
+    public void RandomizePart(int partID)
+    {
+        FaceParts[partID].RandomizePart(_imageList);
     }
 }

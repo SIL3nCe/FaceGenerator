@@ -36,18 +36,12 @@ public class FacePart : MonoBehaviour
         _partTexture = new(0, 0);
     }
 
-    public void Initialize(int partID, int totalPixelSize)
+    public void Initialize(int partID)
     {
         FacePartID = partID;
 
         _facePartUI = Instantiate(FacePartUIPrefab);
-        _facePartUI.transform.parent = transform;
-
         _facePartUI.GetComponent<FacePartUI>().FacePartID = FacePartID;
-
-        Vector2 pos = Vector2.zero;
-        pos.x = totalPixelSize * 0.01f;
-        _facePartUI.transform.localPosition = pos;
     }
 
     public void SetPositionBasedOnPixelHeightAccumulation(FacePart previousPart)
@@ -65,6 +59,10 @@ public class FacePart : MonoBehaviour
         }
 
         transform.position = partPos;
+
+        partPos.x = FaceGenerator.Instance.TotalImageHeight * 0.005f;
+        partPos.y += partPos.x;
+        _facePartUI.transform.localPosition = partPos;
     }
 
     public void RandomizePart(List<Texture2D> imageList)
