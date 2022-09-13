@@ -6,18 +6,13 @@ using UnityEngine;
 [Serializable]
 public class FacePart : MonoBehaviour
 {
-    public int FacePartID;
+    public int FacePartID = 0;
 
-    public SpriteRenderer PartRenderer;
-
+    // Pixel height
+    [NonSerialized]
     public int PartPixelHeightPercentage = 0;
-
-    public GameObject FacePartUIPrefab;
-    private GameObject _facePartUI;
-
     [NonSerialized]
     public int PartPixelHeight;
-
     // Accumulation of pixel height of previous parts
     [NonSerialized]
     public int PixelHeightAccumulation = 0;
@@ -25,20 +20,25 @@ public class FacePart : MonoBehaviour
     // Id of the texture in _imageList used for this part
     [NonSerialized]
     public int CurrentfaceID = -1;
+    private Texture2D _partTexture;
 
+    // Lock status
     [NonSerialized]
     public bool IsLocked = false;
 
-    private Texture2D _partTexture;
+    // Part UI
+    public GameObject FacePartUIPrefab;
+    private GameObject _facePartUI;
 
     private void Awake()
     {
         _partTexture = new(0, 0);
     }
 
-    public void Initialize(int partID)
+    public void Initialize(int partID, int heightPercentage)
     {
         FacePartID = partID;
+        PartPixelHeightPercentage = heightPercentage;
 
         _facePartUI = Instantiate(FacePartUIPrefab);
         _facePartUI.GetComponent<FacePartUI>().FacePartID = FacePartID;
@@ -98,6 +98,6 @@ public class FacePart : MonoBehaviour
         _partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageHeight, PartPixelHeight));
         _partTexture.Apply();
 
-        PartRenderer.sprite = Sprite.Create(_partTexture, new Rect(0.0f, 0.0f, _partTexture.width, _partTexture.height), new Vector2(0.5f, 0.5f));
+        GetComponent<SpriteRenderer>().sprite = Sprite.Create(_partTexture, new Rect(0.0f, 0.0f, _partTexture.width, _partTexture.height), new Vector2(0.5f, 0.5f));
     }
 }

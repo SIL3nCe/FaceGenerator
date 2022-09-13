@@ -11,6 +11,12 @@ public struct SName
     public string LastName;
 }
 
+// Class to serialize face part data in json format
+public class FacePartdata
+{
+    public List<int> PartPercentageHeightList = new();
+}
+
 public class FaceGenerator : MonoBehaviour
 {
     // Get total generated image height based on smallest gathered image
@@ -18,7 +24,9 @@ public class FaceGenerator : MonoBehaviour
     public int TotalImageHeight => _totalImageHeight;
 
     // Face part data
-    public List<FacePart> FaceParts = new();
+    private readonly string _facePartSettingsFilePath = "./FacePartSettings.json";
+    public GameObject FacePartPrefab;
+    private List<FacePart> _faceParts = new();
 
     // List of gathered images
     private readonly string _imageDirectoryPath = "./Images/";
@@ -44,6 +52,7 @@ public class FaceGenerator : MonoBehaviour
 
     void Start()
     {
+        // Load images
         if (Directory.Exists(_imageDirectoryPath))
         {
             DirectoryInfo dirInfo = new(_imageDirectoryPath);
@@ -51,6 +60,7 @@ public class FaceGenerator : MonoBehaviour
             {
                 CreateTextureFromFilePath(file.FullName);
 
+                // Extract last/first name from image name
                 string nameWithoutExt = file.Name.Replace(file.Extension, "");
                 string[] nameSplit = nameWithoutExt.Split("_");
                 if (nameSplit.Length > 1)
@@ -70,6 +80,20 @@ public class FaceGenerator : MonoBehaviour
             // Adjust camera zoom based on total height
             Camera.main.orthographicSize = _totalImageHeight * 0.008f;
 
+            // Load face part settings and create them
+            if (File.Exists(_facePartSettingsFilePath))
+            {
+                string facePartSettings = File.ReadAllText(_facePartSettingsFilePath);
+                FacePartdata facePartData = JsonUtility.FromJson<FacePartdata>(facePartSettings);
+
+                for (int i = 0; i < facePartData.PartPercentageHeightList.Count; ++i)
+                {
+                    FacePart facePart = Instantiate(FacePartPrefab, transform).GetComponent<FacePart>();
+                    facePart.Initialize(i, facePartData.PartPercentageHeightList[i]);
+                    _faceParts.Add(facePart);
+                }
+            }
+
             // Create Name buttons UI
             if (_namesList.Count > 0)
             {
@@ -80,18 +104,12 @@ public class FaceGenerator : MonoBehaviour
                 _nameUI.transform.position = pos;
             }
 
-            // Init parts, will create part UIs
-            for (int i = 0; i < FaceParts.Count; ++i)
-            {
-                FaceParts[i].Initialize(i);
-            }
-
             // Update last part pixel height before starting since BaseImageHeight has just been computed here
             SetupPartPixelHeights();
 
             // Compute pixel height accumulation for every part before generating
             int pixelHeightAccumulation = 0;
-            foreach (FacePart facePart in FaceParts)
+            foreach (FacePart facePart in _faceParts)
             {
                 pixelHeightAccumulation += facePart.PartPixelHeight;
                 facePart.PixelHeightAccumulation = pixelHeightAccumulation;
@@ -128,7 +146,7 @@ public class FaceGenerator : MonoBehaviour
             return;
 
         // Get random image for every part and crop them
-        foreach (FacePart facePart in FaceParts)
+        foreach (FacePart facePart in _faceParts)
         {
             facePart.RandomizePart(_imageList);
         }
@@ -145,9 +163,9 @@ public class FaceGenerator : MonoBehaviour
 
     public void AdjustPartLocation()
     {
-        for (int i = 0; i < FaceParts.Count; ++i)
+        for (int i = 0; i < _faceParts.Count; ++i)
         {
-            FaceParts[i].SetPositionBasedOnPixelHeightAccumulation(i == 0 ? null : FaceParts[i - 1]);
+            _faceParts[i].SetPositionBasedOnPixelHeightAccumulation(i == 0 ? null : _faceParts[i - 1]);
         }
     }
 
@@ -162,11 +180,11 @@ public class FaceGenerator : MonoBehaviour
             return;
 
         // Get random name in the selected faces and invert first letters
-        int randId = FaceParts[UnityEngine.Random.Range(0, FaceParts.Count)].CurrentfaceID;
+        int randId = _faceParts[UnityEngine.Random.Range(0, _faceParts.Count)].CurrentfaceID;
         randId = Mathf.Min(randId, _namesList.Count - 1);
         string firstName = _namesList[randId].FirstName;
 
-        randId = FaceParts[UnityEngine.Random.Range(0, FaceParts.Count)].CurrentfaceID;
+        randId = _faceParts[UnityEngine.Random.Range(0, _faceParts.Count)].CurrentfaceID;
         randId = Mathf.Min(randId, _namesList.Count - 1);
         string lastName = _namesList[randId].LastName;
 
@@ -181,59 +199,59 @@ public class FaceGenerator : MonoBehaviour
     {
         // Check if percentage are valid and set to 0 if not
         int accPerc = 0;
-        for (int i = 0; i < FaceParts.Count - 1; ++i)
+        for (int i = 0; i < _faceParts.Count - 1; ++i)
         {
-            FaceParts[i].PartPixelHeightPercentage = Mathf.Clamp(FaceParts[i].PartPixelHeightPercentage, 0, 100 - accPerc);
-            accPerc += FaceParts[i].PartPixelHeightPercentage;
+            _faceParts[i].PartPixelHeightPercentage = Mathf.Clamp(_faceParts[i].PartPixelHeightPercentage, 0, 100 - accPerc);
+            accPerc += _faceParts[i].PartPixelHeightPercentage;
             accPerc = Mathf.Min(accPerc, 100);
         }
 
         // Bottom integrate all the remaining pixel percentage
-        FaceParts[^1].PartPixelHeightPercentage = _totalImageHeight - accPerc;
+        _faceParts[^1].PartPixelHeightPercentage = _totalImageHeight - accPerc;
 
         // Generate pixel height based on percentages
         float accVal = 0;
-        for (int i = 0; i < FaceParts.Count - 1; ++i)
+        for (int i = 0; i < _faceParts.Count - 1; ++i)
         {
-            float pixelHeight = _totalImageHeight * (FaceParts[i].PartPixelHeightPercentage * 0.01f);
-            FaceParts[i].PartPixelHeight = (int)pixelHeight;
+            float pixelHeight = _totalImageHeight * (_faceParts[i].PartPixelHeightPercentage * 0.01f);
+            _faceParts[i].PartPixelHeight = (int)pixelHeight;
             accVal += pixelHeight;
         }
 
         // Bottom integrate all the remaining pixel height
-        FaceParts[^1].PartPixelHeight = _totalImageHeight - (int)accVal;
+        _faceParts[^1].PartPixelHeight = _totalImageHeight - (int)accVal;
     }
 
     public void LoadPreviousPart(int partID)
     {
-        if (FaceParts[partID].IsLocked)
+        if (_faceParts[partID].IsLocked)
             return;
 
-        FaceParts[partID].LoadNextTextureID(_imageList, false);
+        _faceParts[partID].LoadNextTextureID(_imageList, false);
         RandomizeName();
     }
     
     public void LoadNextPart(int partID)
     {
-        if (FaceParts[partID].IsLocked)
+        if (_faceParts[partID].IsLocked)
             return;
 
-        FaceParts[partID].LoadNextTextureID(_imageList, true);
+        _faceParts[partID].LoadNextTextureID(_imageList, true);
         RandomizeName();
     }
 
     public bool LockPart(int partID)
     {
-        FaceParts[partID].IsLocked = !FaceParts[partID].IsLocked;
-        return FaceParts[partID].IsLocked;
+        _faceParts[partID].IsLocked = !_faceParts[partID].IsLocked;
+        return _faceParts[partID].IsLocked;
     }
 
     public void RandomizePart(int partID)
     {
-        if (FaceParts[partID].IsLocked)
+        if (_faceParts[partID].IsLocked)
             return;
 
-        FaceParts[partID].RandomizePart(_imageList);
+        _faceParts[partID].RandomizePart(_imageList);
         RandomizeName();
     }
 }
