@@ -75,6 +75,22 @@ public class FacePart : MonoBehaviour
         ApplyCurrentFaceID(imageList);
     }
 
+    public void ReversePart()
+    {
+        if (IsLocked || PartPixelHeight == 0)
+            return;
+
+        Color[] pixels = _partTexture.GetPixels();
+
+        for (int i = 0; i < PartPixelHeight; ++i)
+        {
+            System.Array.Reverse(pixels, i * FaceGenerator.Instance.TotalImageHeight, FaceGenerator.Instance.TotalImageHeight);
+        }
+
+        _partTexture.SetPixels(pixels);
+        _partTexture.Apply();
+    }
+
     public void LoadNextTextureID(List<Texture2D> imageList, bool next)
     {
         if (IsLocked)
@@ -95,9 +111,13 @@ public class FacePart : MonoBehaviour
 
         _partTexture.Reinitialize(FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
         _partTexture.filterMode = FilterMode.Point;
-        _partTexture.SetPixels(baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageHeight, PartPixelHeight));
+        Color[] pixels = baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
+        _partTexture.SetPixels(pixels);
         _partTexture.Apply();
 
         GetComponent<SpriteRenderer>().sprite = Sprite.Create(_partTexture, new Rect(0.0f, 0.0f, _partTexture.width, _partTexture.height), new Vector2(0.5f, 0.5f));
+
+        if (UnityEngine.Random.Range(0, 2) == 1)
+            ReversePart();
     }
 }

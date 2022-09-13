@@ -39,4 +39,9 @@ public class FacePartUI : MonoBehaviour
     {
         FaceGenerator.Instance.RandomizePart(FacePartID);
     }
+
+    public void OnReverseClicked()
+    {
+        FaceGenerator.Instance.ReversePart(FacePartID);
+    }
 }

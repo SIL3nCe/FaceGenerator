@@ -254,4 +254,9 @@ public class FaceGenerator : MonoBehaviour
         _faceParts[partID].RandomizePart(_imageList);
         RandomizeName();
     }
+
+    public void ReversePart(int partID)
+    {
+        _faceParts[partID].ReversePart();
+    }
 }
