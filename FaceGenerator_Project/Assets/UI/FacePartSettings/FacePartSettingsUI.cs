@@ -13,7 +13,7 @@ public class FacePartSettingsUI : MonoBehaviour
     public void OnAddPart()
     {
         GameObject slider = Instantiate(PartHeightSliderPrefab, PartPanel.transform);
-        slider.GetComponent<PartHeightSlider>().PartID = _partSliderList.Count;
+        slider.GetComponent<PartHeightSlider>().SetPartID(_partSliderList.Count);
 
         _partSliderList.Add(slider);
 
