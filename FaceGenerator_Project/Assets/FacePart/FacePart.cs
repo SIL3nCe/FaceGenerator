@@ -26,6 +26,9 @@ public class FacePart : MonoBehaviour
     [NonSerialized]
     public bool IsLocked = false;
 
+    // Revert status
+    private bool _isReversed = false;
+
     // Part UI
     public GameObject FacePartUIPrefab;
     private GameObject _facePartUI;
@@ -73,22 +76,9 @@ public class FacePart : MonoBehaviour
         CurrentfaceID = UnityEngine.Random.Range(0, imageList.Count);
 
         ApplyCurrentFaceID(imageList);
-    }
 
-    public void ReversePart()
-    {
-        if (IsLocked || PartPixelHeight == 0)
-            return;
-
-        Color[] pixels = _partTexture.GetPixels();
-
-        for (int i = 0; i < PartPixelHeight; ++i)
-        {
-            System.Array.Reverse(pixels, i * FaceGenerator.Instance.TotalImageHeight, FaceGenerator.Instance.TotalImageHeight);
-        }
-
-        _partTexture.SetPixels(pixels);
-        _partTexture.Apply();
+        if (UnityEngine.Random.Range(0, 2) == 1)
+            ReversePart();
     }
 
     public void LoadNextTextureID(List<Texture2D> imageList, bool next)
@@ -100,24 +90,54 @@ public class FacePart : MonoBehaviour
         CurrentfaceID %= imageList.Count;
 
         ApplyCurrentFaceID(imageList);
+
+        if (UnityEngine.Random.Range(0, 2) == 1)
+            ReversePart();
     }
 
-    private void ApplyCurrentFaceID(List<Texture2D> imageList)
+    public void ReversePart()
     {
-        if (PartPixelHeight == 0)
+        if (IsLocked || PartPixelHeight == 0)
             return;
+
+        Color[] pixels = _partTexture.GetPixels();
+        ReverseColorArray(ref pixels);
+
+        _partTexture.SetPixels(pixels);
+        _partTexture.Apply();
+
+        _isReversed = !_isReversed;
+    }
+
+    public void ApplyCurrentFaceID(List<Texture2D> imageList)
+    {
+        // TODO remove pour pouvoir hide complètement si % set à 0 mais warning si height à 0 pour génération mipmap
+        //if (PartPixelHeight == 0)
+        //    return;
 
         Texture2D baseTexture = imageList[CurrentfaceID];
 
         _partTexture.Reinitialize(FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
         _partTexture.filterMode = FilterMode.Point;
         Color[] pixels = baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
+
+        // Texture is redraw without changing its base texture and it was reversed, apply the reverse back
+        if (_isReversed)
+        {
+            ReverseColorArray(ref pixels);
+        }
+
         _partTexture.SetPixels(pixels);
         _partTexture.Apply();
 
         GetComponent<SpriteRenderer>().sprite = Sprite.Create(_partTexture, new Rect(0.0f, 0.0f, _partTexture.width, _partTexture.height), new Vector2(0.5f, 0.5f));
+    }
 
-        if (UnityEngine.Random.Range(0, 2) == 1)
-            ReversePart();
+    private void ReverseColorArray(ref Color[] pixels)
+    {
+        for (int i = 0; i < PartPixelHeight; ++i)
+        {
+            System.Array.Reverse(pixels, i * FaceGenerator.Instance.TotalImageHeight, FaceGenerator.Instance.TotalImageHeight);
+        }
     }
 }

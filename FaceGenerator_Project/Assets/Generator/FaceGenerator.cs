@@ -91,6 +91,8 @@ public class FaceGenerator : MonoBehaviour
                     FacePart facePart = Instantiate(FacePartPrefab, transform).GetComponent<FacePart>();
                     facePart.Initialize(i, facePartData.PartPercentageHeightList[i]);
                     _faceParts.Add(facePart);
+
+                    FacePartSettingsUI.Instance.CreatePartSlider(facePart.PartPixelHeightPercentage);
                 }
             }
 
@@ -106,14 +108,6 @@ public class FaceGenerator : MonoBehaviour
 
             // Update last part pixel height before starting since BaseImageHeight has just been computed here
             SetupPartPixelHeights();
-
-            // Compute pixel height accumulation for every part before generating
-            int pixelHeightAccumulation = 0;
-            foreach (FacePart facePart in _faceParts)
-            {
-                pixelHeightAccumulation += facePart.PartPixelHeight;
-                facePart.PixelHeightAccumulation = pixelHeightAccumulation;
-            }
 
             // Start generation
             GenerateFace();
@@ -153,19 +147,32 @@ public class FaceGenerator : MonoBehaviour
 
         AdjustPartLocation();
 
-        // Center generated image on y 0
-        Vector2 pos = transform.position;
-        pos.y += _totalImageHeight * 0.005f;
-        transform.position = pos;
-
         RandomizeName();
     }
 
-    public void AdjustPartLocation()
+    private void AdjustPartLocation()
     {
         for (int i = 0; i < _faceParts.Count; ++i)
         {
             _faceParts[i].SetPositionBasedOnPixelHeightAccumulation(i == 0 ? null : _faceParts[i - 1]);
+        }
+
+        // Center generated image on y 0
+        Vector2 pos = transform.position;
+        pos.y += _totalImageHeight * 0.005f;
+        transform.position = pos;
+    }
+
+    public void OnPartSliderUpdated(int partID, int newPixelHeight)
+    {
+        _faceParts[partID].PartPixelHeightPercentage = newPixelHeight;
+
+        SetupPartPixelHeights();
+        AdjustPartLocation();
+
+        foreach (FacePart facePart in _faceParts)
+        {
+            facePart.ApplyCurrentFaceID(_imageList);
         }
     }
 
@@ -174,6 +181,7 @@ public class FaceGenerator : MonoBehaviour
         _nameLocked = !_nameLocked;
         return _nameLocked;
     }
+
     public void RandomizeName()
     {
         if (_nameLocked || _namesList.Count == 0)
@@ -204,10 +212,13 @@ public class FaceGenerator : MonoBehaviour
             _faceParts[i].PartPixelHeightPercentage = Mathf.Clamp(_faceParts[i].PartPixelHeightPercentage, 0, 100 - accPerc);
             accPerc += _faceParts[i].PartPixelHeightPercentage;
             accPerc = Mathf.Min(accPerc, 100);
+
+            FacePartSettingsUI.Instance.SetPartSliderValue(i, _faceParts[i].PartPixelHeightPercentage);
         }
 
         // Bottom integrate all the remaining pixel percentage
-        _faceParts[^1].PartPixelHeightPercentage = _totalImageHeight - accPerc;
+        _faceParts[^1].PartPixelHeightPercentage = 100 - accPerc;
+        FacePartSettingsUI.Instance.SetPartSliderValue(_faceParts.Count - 1, _faceParts[^1].PartPixelHeightPercentage);
 
         // Generate pixel height based on percentages
         float accVal = 0;
@@ -216,10 +227,14 @@ public class FaceGenerator : MonoBehaviour
             float pixelHeight = _totalImageHeight * (_faceParts[i].PartPixelHeightPercentage * 0.01f);
             _faceParts[i].PartPixelHeight = (int)pixelHeight;
             accVal += pixelHeight;
+            _faceParts[i].PixelHeightAccumulation = (int)accVal;
         }
 
         // Bottom integrate all the remaining pixel height
         _faceParts[^1].PartPixelHeight = _totalImageHeight - (int)accVal;
+        _faceParts[^1].PixelHeightAccumulation = _totalImageHeight;
+
+        // Update UI slider of the part with potentially updated percentage
     }
 
     public void LoadPreviousPart(int partID)

@@ -10,20 +10,38 @@ public class FacePartSettingsUI : MonoBehaviour
 
     private List<GameObject> _partSliderList = new();
 
-    public void OnAddPart()
+    private static FacePartSettingsUI _instance = null;
+    public static FacePartSettingsUI Instance => _instance;
+
+    private void Awake()
+    {
+        _instance = this;
+    }
+
+    public void CreatePartSlider(int defaultValue)
     {
         GameObject slider = Instantiate(PartHeightSliderPrefab, PartPanel.transform);
-        slider.GetComponent<PartHeightSlider>().SetPartID(_partSliderList.Count);
+        slider.GetComponent<PartHeightSlider>().Initialize(_partSliderList.Count, defaultValue);
 
         _partSliderList.Add(slider);
 
         // Update panel height
         Rect panelRect = PartPanel.GetComponent<RectTransform>().rect;
-        panelRect.height += 35.0f;
+        panelRect.height += 40.0f;
         PartPanel.GetComponent<RectTransform>().sizeDelta = panelRect.size;
     }
 
-    public void OnRemoveLastPart()
+    public void SetPartSliderValue(int partID, int newValue)
+    {
+        _partSliderList[partID].GetComponent<PartHeightSlider>().ForceSliderValue(newValue);
+    }
+
+    public void OnAddPartClicked()
+    {
+        CreatePartSlider(20);
+    }
+
+    public void OnRemoveLastPartClicked()
     {
         if (_partSliderList.Count > 0)
         {
@@ -32,7 +50,7 @@ public class FacePartSettingsUI : MonoBehaviour
 
             // Update panel height
             Rect panelRect = PartPanel.GetComponent<RectTransform>().rect;
-            panelRect.height -= 35.0f;
+            panelRect.height -= 40.0f;
             PartPanel.GetComponent<RectTransform>().sizeDelta = panelRect.size;
         }
     }
@@ -40,5 +58,10 @@ public class FacePartSettingsUI : MonoBehaviour
     public void OnSave()
     {
 
+    }
+
+    public void OnDisplayButtonClicked()
+    {
+        PartPanel.SetActive(!PartPanel.activeSelf);
     }
 }

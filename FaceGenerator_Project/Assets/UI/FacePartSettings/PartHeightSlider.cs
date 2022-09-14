@@ -12,15 +12,25 @@ public class PartHeightSlider : MonoBehaviour
 
     private int _partID = 0;
 
-    public void SetPartID(int partID)
+    public void Initialize(int partID, int defaultValue)
     {
         _partID = partID;
         PartNameText.text = partID.ToString();
+        
+        ForceSliderValue(defaultValue);
+    }
+
+    public void ForceSliderValue(int newValue)
+    {
+
+        PartSlider.SetValueWithoutNotify(newValue);
+        PartInputField.text = newValue.ToString();
     }
 
     public void OnSliderValueChanged(float value)
     {
         PartInputField.text = ((int)value).ToString();
+        FaceGenerator.Instance.OnPartSliderUpdated(_partID, (int)value);
     }
 
     public void OnInputFieldValueChanged(string value)
@@ -29,7 +39,9 @@ public class PartHeightSlider : MonoBehaviour
         bool res = int.TryParse(value, out parseResult);
         if (res)
         {
+            parseResult = Mathf.Clamp(parseResult, 0, 100);
             PartSlider.value = parseResult;
+            FaceGenerator.Instance.OnPartSliderUpdated(_partID, parseResult);
         }
         else
         {
