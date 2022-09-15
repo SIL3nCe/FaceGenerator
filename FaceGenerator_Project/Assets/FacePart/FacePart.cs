@@ -47,6 +47,11 @@ public class FacePart : MonoBehaviour
         _facePartUI.GetComponent<FacePartUI>().FacePartID = FacePartID;
     }
 
+    private void OnDestroy()
+    {
+        Destroy(_facePartUI);
+    }
+
     public void SetPositionBasedOnPixelHeightAccumulation(FacePart previousPart)
     {
         Vector2 partPos = transform.position;

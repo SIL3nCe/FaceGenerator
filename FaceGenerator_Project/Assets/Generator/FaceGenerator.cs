@@ -174,8 +174,34 @@ public class FaceGenerator : MonoBehaviour
         transform.position = pos;
     }
 
+    public void CreatePart()
+    {
+        FacePart facePart = Instantiate(FacePartPrefab, transform).GetComponent<FacePart>();
+        facePart.Initialize(_faceParts.Count, 20);
+        _faceParts.Add(facePart);
+
+        FacePartSettingsUI.Instance.CreatePartSlider(facePart.PartPixelHeightPercentage);
+
+        facePart.RandomizePart(_imageList);
+
+        // Update every part and recompute last part percentage
+        OnPartSliderUpdated(facePart.FacePartID, 20);
+    }
+
+    public void RemoveLastPart()
+    {
+        Destroy(_faceParts[^1].gameObject);
+        _faceParts.RemoveAt(_faceParts.Count - 1);
+
+        // Update every part and recompute last part percentage
+        OnPartSliderUpdated(_faceParts.Count - 1, 100);
+    }
+
     public void OnPartSliderUpdated(int partID, int newPixelHeight)
     {
+        if (_faceParts.Count == 0)
+            return;
+
         _faceParts[partID].PartPixelHeightPercentage = newPixelHeight;
 
         SetupPartPixelHeights();
@@ -216,6 +242,9 @@ public class FaceGenerator : MonoBehaviour
 
     private void SetupPartPixelHeights()
     {
+        if (_faceParts.Count == 0)
+            return;
+
         // Check if percentage are valid and set to 0 if not
         int accPerc = 0;
         for (int i = 0; i < _faceParts.Count - 1; ++i)
