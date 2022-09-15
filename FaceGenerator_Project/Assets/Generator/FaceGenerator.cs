@@ -72,6 +72,12 @@ public class FaceGenerator : MonoBehaviour
                 }
             }
 
+            if (_imageList.Count == 0)
+            {
+                NameText.text = "No image found";
+                return;
+            }
+
             // Adjust location to keep it centered to the left, Initially configured for 512x512
             Vector2 pos = transform.position;
             pos.x *= _totalImageHeight / 512.0f;
