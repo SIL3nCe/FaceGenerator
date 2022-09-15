@@ -176,6 +176,10 @@ public class FaceGenerator : MonoBehaviour
 
     public void CreatePart()
     {
+        // Avoid creating parts if we don't have images
+        if (_imageList.Count == 0)
+            return;
+
         FacePart facePart = Instantiate(FacePartPrefab, transform).GetComponent<FacePart>();
         facePart.Initialize(_faceParts.Count, 20);
         _faceParts.Add(facePart);
@@ -221,8 +225,15 @@ public class FaceGenerator : MonoBehaviour
 
     public void RandomizeName()
     {
-        if (_nameLocked || _namesList.Count == 0)
+        if (_nameLocked
+            || _namesList.Count == 0
+            || _faceParts.Count == 0)
+        {
+            _nameUI.SetActive(false);
             return;
+        }
+
+        _nameUI.SetActive(true);
 
         // Get random name in the selected faces and invert first letters
         int randId = _faceParts[UnityEngine.Random.Range(0, _faceParts.Count)].CurrentfaceID;
