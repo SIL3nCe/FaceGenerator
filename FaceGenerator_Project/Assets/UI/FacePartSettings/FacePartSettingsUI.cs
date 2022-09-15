@@ -25,7 +25,7 @@ public class FacePartSettingsUI : MonoBehaviour
 
         _partSliderList.Add(slider);
 
-        UpdatePartPanelHeight(42.0f);
+        UpdatePartPanelHeight(40.0f);
     }
 
     public void UpdatePartPanelHeight(float addValue)
@@ -52,7 +52,7 @@ public class FacePartSettingsUI : MonoBehaviour
             Destroy(_partSliderList[^1]);
             _partSliderList.RemoveAt(_partSliderList.Count - 1);
 
-            UpdatePartPanelHeight(-42.0f);
+            UpdatePartPanelHeight(-40.0f);
 
             FaceGenerator.Instance.RemoveLastPart();
         }
