@@ -12,7 +12,7 @@ public struct SName
 }
 
 // Class to serialize face part data in json format
-public class FacePartdata
+public class FacePartData
 {
     public List<int> PartPercentageHeightList = new();
 }
@@ -84,7 +84,7 @@ public class FaceGenerator : MonoBehaviour
             if (File.Exists(_facePartSettingsFilePath))
             {
                 string facePartSettings = File.ReadAllText(_facePartSettingsFilePath);
-                FacePartdata facePartData = JsonUtility.FromJson<FacePartdata>(facePartSettings);
+                FacePartData facePartData = JsonUtility.FromJson<FacePartData>(facePartSettings);
 
                 for (int i = 0; i < facePartData.PartPercentageHeightList.Count; ++i)
                 {
@@ -112,6 +112,17 @@ public class FaceGenerator : MonoBehaviour
             // Start generation
             GenerateFace();
         }
+    }
+
+    public void SaveCurrentPartHeights()
+    {
+        FacePartData partData = new();
+        foreach (FacePart part in _faceParts)
+        {
+            partData.PartPercentageHeightList.Add(part.PartPixelHeightPercentage);
+        }
+        string jsonData = JsonUtility.ToJson(partData);
+        File.WriteAllText(_facePartSettingsFilePath, jsonData);
     }
 
     private void CreateTextureFromFilePath(string filePath)

@@ -124,7 +124,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 973782036738273573}
         m_TargetAssemblyTypeName: FacePartSettingsUI, Assembly-CSharp
-        m_MethodName: OnSave
+        m_MethodName: OnSaveButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

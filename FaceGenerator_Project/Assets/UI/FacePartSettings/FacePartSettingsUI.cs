@@ -55,9 +55,9 @@ public class FacePartSettingsUI : MonoBehaviour
         }
     }
 
-    public void OnSave()
+    public void OnSaveButtonClicked()
     {
-
+        FaceGenerator.Instance.SaveCurrentPartHeights();
     }
 
     public void OnDisplayButtonClicked()
