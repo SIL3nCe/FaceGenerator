@@ -10,7 +10,6 @@ public class FaceNameUI : MonoBehaviour
     public Sprite LockedIcon;
     public Sprite UnlockedIcon;
 
-
     private void Start()
     {
         // Scale world space UI based on tota generated pixel height which is changing camera size. Initially configured for 512x512

@@ -190,6 +190,8 @@ public class FaceGenerator : MonoBehaviour
 
         // Update every part and recompute last part percentage
         OnPartSliderUpdated(facePart.FacePartID, 20);
+
+        RandomizeName();
     }
 
     public void RemoveLastPart()
@@ -199,6 +201,13 @@ public class FaceGenerator : MonoBehaviour
 
         // Update every part and recompute last part percentage
         OnPartSliderUpdated(_faceParts.Count - 1, 100);
+
+        // Hide name if no part remaining
+        if (_faceParts.Count == 0)
+        {
+            NameText.text = "";
+            _nameUI.SetActive(false);
+        }
     }
 
     public void OnPartSliderUpdated(int partID, int newPixelHeight)
@@ -225,9 +234,10 @@ public class FaceGenerator : MonoBehaviour
 
     public void RandomizeName()
     {
-        if (_nameLocked
-            || _namesList.Count == 0
-            || _faceParts.Count == 0)
+        if (_nameLocked && _nameUI.activeSelf)
+            return;
+        
+        if (_namesList.Count == 0 || _faceParts.Count == 0)
         {
             _nameUI.SetActive(false);
             return;
