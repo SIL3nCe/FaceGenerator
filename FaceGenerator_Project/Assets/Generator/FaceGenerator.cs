@@ -19,9 +19,12 @@ public class FacePartData
 
 public class FaceGenerator : MonoBehaviour
 {
-    // Get total generated image height based on smallest gathered image
+    // Total generated image height/width based on smallest gathered image
     private int _totalImageHeight = -1;
     public int TotalImageHeight => _totalImageHeight;
+
+    private int _totalImageWidth = -1;
+    public int TotalImageWidth => _totalImageWidth;
 
     // Face part data
     private readonly string _facePartSettingsFilePath = "./FacePartSettings.json";
@@ -139,6 +142,7 @@ public class FaceGenerator : MonoBehaviour
         tex.LoadImage(bytes);
 
         _totalImageHeight = _totalImageHeight == -1 ? tex.height : Mathf.Min(_totalImageHeight, tex.height);
+        _totalImageWidth = _totalImageWidth == -1 ? tex.width : Mathf.Min(_totalImageWidth, tex.width);
 
         _imageList.Add(tex);
     }

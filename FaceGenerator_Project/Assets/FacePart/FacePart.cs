@@ -122,9 +122,9 @@ public class FacePart : MonoBehaviour
 
         Texture2D baseTexture = imageList[CurrentfaceID];
 
-        _partTexture.Reinitialize(FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
+        _partTexture.Reinitialize(FaceGenerator.Instance.TotalImageWidth, PartPixelHeight);
         _partTexture.filterMode = FilterMode.Point;
-        Color[] pixels = baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageHeight, PartPixelHeight);
+        Color[] pixels = baseTexture.GetPixels(0, baseTexture.height - PixelHeightAccumulation, FaceGenerator.Instance.TotalImageWidth, PartPixelHeight);
 
         // Texture is redraw without changing its base texture and it was reversed, apply the reverse back
         if (_isReversed)
@@ -142,7 +142,7 @@ public class FacePart : MonoBehaviour
     {
         for (int i = 0; i < PartPixelHeight; ++i)
         {
-            System.Array.Reverse(pixels, i * FaceGenerator.Instance.TotalImageHeight, FaceGenerator.Instance.TotalImageHeight);
+            System.Array.Reverse(pixels, i * FaceGenerator.Instance.TotalImageWidth, FaceGenerator.Instance.TotalImageWidth);
         }
     }
 }
